@@ -12,8 +12,8 @@ from sklearn.linear_model import LogisticRegression
 
 import pandas as pd
 
-from experiment.experimental_fitting import CurveFit
-from experiment.experimental_setup import Experiment
+from experimental_fitting import CurveFit
+from experimental_setup import Experiment
 
 if __name__ == '__main__':
 
@@ -76,9 +76,8 @@ if __name__ == '__main__':
                        'min_samples_leaf': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12],
                        'random_state' :[42]}
 
-    kneighbours_distribution = {'n_neighbors': [1,2,3,4,5, 6,7,8, 9,10,11,12],
-                                'weights': ['distance', 'uniform'],
-                                'algorithm': ['auto', 'ball_tree','kd_tree', 'brute']}
+    kneighbours_distribution = {'n_neighbors': [1,2,3,4,5, 6,7,8, 9,10,11,12,13,14,15,16,17,18,19,20],
+                                'weights': ['distance', 'uniform']}
 
     lr_distribution = {'C': [1, 3, 5, 7, 9, 11],
                        'solver': ['newton-cg', 'lbfgs', 'sag', 'saga'],
