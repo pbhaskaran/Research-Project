@@ -9,9 +9,6 @@ from scipy import stats
 import os
 import statsmodels.api as sm
 import pylab as py
-
-
-# Common imports
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -37,8 +34,6 @@ class CurveFit:
         self.df = pd.merge(temp1, temp2, on=['learner', 'openmlid'], how='left')
         self.df = pd.merge(self.df, temp3, on=['learner', 'openmlid'], how='left')
         self.df = pd.merge(self.df, temp4, on=['learner', 'openmlid'], how='left')
-        # temp_df = self.df[['learner', 'average_accuracy_score']].copy()
-        # temp_df = temp_df.groupby(['learner']).agg({"average_accuracy_score" : ['mean']})
         self.df.to_pickle("experiment_results_cleaned.gz")
 
     def find(self, array, value):
@@ -111,6 +106,8 @@ class CurveFit:
         df_all_results = pd.DataFrame(np.array(extrapolate_df),
                                       columns=['learner', 'openmlid', 'training_size','error',
                                                'parameters', 'model', 'average_std'])
+
+
         df_all_results.to_pickle("extrapolated_parameters.gz")
 
         new_df = pd.read_pickle("extrapolated_parameters.gz")
@@ -147,45 +144,33 @@ class CurveFit:
                 elif model == "log2":
                     arry1.append(self.log2(i, *parameters1))
                     arry2.append(self.log2(i, *parameters2))
-            num = int(np.power(2, (7+ indx)/2))
 
             #Extrapolation
             # plt.plot(arrx, arry1,label = (str(row1["learner"])) + str(row1["openmlid"]) + "  extrapolated at " + str(anchor))
             # plt.plot(arrx, arry2,label = (str(row2["learner"])) + str(row2["openmlid"]) + "  extrapolated at " + str(anchor))
 
-            ##Learning curve standard error
-            # plt.errorbar(row1["training_size"],row1["error"], marker = ".", yerr = row1['average_std'], linestyle = "None" , label = (str(row1["learner"]) + str(row1["openmlid"])))
-            # plt.errorbar(row2["training_size"],row2["error"], marker = ".", yerr = row2['average_std'],  linestyle = "None", label = (str(row2["learner"]) + str(row2["openmlid"])))
+            ##Learning curve with standard error
+            plt.errorbar(row1["training_size"],row1["error"], marker = ".", yerr = row1['average_std'], linestyle = "None" , label = (str(row1["learner"]) + str(row1["openmlid"])))
+            plt.errorbar(row2["training_size"],row2["error"], marker = ".", yerr = row2['average_std'],  linestyle = "None", label = (str(row2["learner"]) + str(row2["openmlid"])))
             # #General learning curve
             # plt.errorbar(row1["training_size"],row1["error"], marker = ".", linestyle = "None", label = (str(row1["learner"]) + str(row1["openmlid"])))
             # plt.errorbar(row2["training_size"],row2["error"], marker = ".",  linestyle = "None", label = (str(row2["learner"]) + str(row2["openmlid"])))
-            # plt.xlabel("Training size")
-            # plt.ylabel("Error")
-            # plt.title("default vs tuned " + str(row1["learner"]) + " on dataset " + str(row1["openmlid"]))
+            plt.xlabel("Training size")
+            plt.ylabel("Error")
+            plt.title("default vs tuned " + str(row1["learner"]) + " on dataset " + str(row1["openmlid"]))
             #plt.legend()
             #Difference
-            row3 = (row1["error"] - row2["error"])/row1["error"]
-            rowerr = row1['average_std'] + row2['average_std']
-            plt.errorbar(row2["training_size"],row3, marker = ".", yerr = rowerr,  linestyle = "None")
-            #plt.text(0, 0.45, str(row3))
-            t_value, p_value = stats.ttest_rel(row1["error"],row2["error"])
-            length =  str((len(row1['error'])))
-            print(t_value, "   ", p_value, "    ", str(row1["openmlid"]))
-            print(length)
-
-            # if row1['openmlid'] == 1116:
-            #     print("hi")
-            #     fig = sm.qqplot(row1['error'], line='45')
-            #     #fig2 = sm.qqplot(row2['error'], line='45')
-            #     plt.savefig('report_images/qqplot/' + str(row1["openmlid"]) + str(row1['learner']) + "fig")
-
-
+            # row3 = (row1["error"] - row2["error"])/row1["error"]
+            # rowerr = row1['average_std'] + row2['average_std']
+            # plt.errorbar(row2["training_size"],row3, marker = ".", yerr = rowerr,  linestyle = "None")
 
             if not os.path.exists("report_images/" + str(row1["openmlid"])):
                 os.makedirs("report_images/" + str(row1["openmlid"]))
 
             if not os.path.exists("report_images/" + str(row1["openmlid"]) + "/curve"):
                 os.makedirs("report_images/" + str(row1["openmlid"]) + "/curve")
+
+            plt.savefig("report_images/" + str(row1["openmlid"]) + "/curve" + str(row1['learner']) + ".png")
 
 
 

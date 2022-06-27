@@ -53,8 +53,9 @@ if __name__ == '__main__':
     n_splits = 5
 
     # Learners
-    learners = [DecisionTreeClassifier(), DecisionTreeClassifier(), KNeighborsClassifier(), KNeighborsClassifier(), LogisticRegression(), LogisticRegression()]
-    learners = [SVC(), SVC()]
+    learners = [DecisionTreeClassifier(), DecisionTreeClassifier(), KNeighborsClassifier(), KNeighborsClassifier()]
+    learners = [KNeighborsClassifier(), KNeighborsClassifier()]
+
     # Hyperparameter distribution/grid
     svc_distribution = {'C': [loguniform(1e0, 1e3)],
                         'gamma':[ loguniform(1e-4, 1e-3)],
@@ -76,7 +77,7 @@ if __name__ == '__main__':
                        'min_samples_leaf': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11,12],
                        'random_state' :[42]}
 
-    kneighbours_distribution = {'n_neighbors': [1,2,3,4,5, 6,7,8, 9,10,11,12,13,14,15,16,17,18,19,20],
+    kneighbours_distribution = {'n_neighbors': [1,2,3,4,5, 6,7,8, 9,10,11,12],
                                 'weights': ['distance', 'uniform']}
 
     lr_distribution = {'C': [1, 3, 5, 7, 9, 11],
@@ -101,7 +102,6 @@ if __name__ == '__main__':
                           'random_state': [42]}
 
 
-    tuning_params = [dt_distribution, None, kneighbours_distribution, None, lr_distribution, None]
     tuning_params = [kneighbours_distribution, None]
     # tuning_strategy = RandomizedSearchCV
     tuning_strategy = GridSearchCV
@@ -110,54 +110,9 @@ if __name__ == '__main__':
     e = Experiment(datasets, learners, tuning_params, tuning_strategy, n_splits=n_splits)
 
     print("Running experiments...")
-    #e.run_all_experiments()
-    #print("Finished running all experiments!")
-    #df1 = pd.read_pickle("final_experiment/experiment_dt.gz")
-    #df2 = pd.read_pickle("final_experiment/experiment_dttuned.gz")
-    # df2 = pd.read_pickle("data_small/experiment_kn_tuned_small.gz") # 715
-    #df3 = pd.concat([df1,df2])
-    # df3.rename(columns = {'accuracy_score' : 'score_valid', 'training_size' : 'size_train'}, inplace=True)
-    # df3['outer_seed'] = 42
-    # df3['inner_seed'] = 42
-    # df3.to_csv("data_small_csv/dtknn-tuned-accuracy-small.csv")
-    #print((np.sort(df1['openmlid'].unique())))
+    e.run_all_experiments()
+    print("Finished running all experiments")
 
-    df1 = pd.read_pickle("final_experiment/experiment_dt.gz")
-    df2 = pd.read_pickle("final_experiment/experiment_kn.gz")
-    df4 = pd.read_pickle("final_experiment/experiment_dttuned.gz")
-    df5 = pd.read_pickle("final_experiment/experiment_kntuned.gz")
-    df6 = pd.concat([df1,df2])
-    df7 = pd.concat([df6,df4])
-    df3 = pd.concat([df7,df5])
-
-    f = CurveFit(df3)
+    df = pd.read_pickle("experiment_results.gz")
+    f = CurveFit(df)
     f.extrapolate(0.2)
-
-    # df1 = pd.read_pickle("final_experiment/experiment_dt.gz")
-    # df2 = pd.read_pickle("final_experiment/experiment_kn.gz")
-    # df4 = pd.read_pickle("final_experiment/experiment_dttuned.gz")
-    # df5 = pd.read_pickle("final_experiment/experiment_kntuned.gz")
-    # df6 = pd.concat([df1,df2])
-    # df7 = pd.concat([df6,df4])
-    # df3 = pd.concat([df7,df5])
-    # dftemp = df3
-    # f = CurveFit(df3)
-    # f.extrapolate(0.2)
-    # df3.rename(columns = {'accuracy_score' : 'score_valid', 'training_size' : 'size_train'}, inplace=True)
-    # df3['outer_seed'] = 42
-    # df3['inner_seed'] = 42
-    # df3.to_csv("accuracy/dtknall-accuracy.csv")
-    # df1 = pd.read_pickle("final_experiment/experiment_kntuned.gz")
-    # df1.rename(columns = {'accuracy_score' : 'score_valid', 'training_size' : 'size_train'}, inplace=True)
-    # df1['outer_seed'] = 42
-    # df1['inner_seed'] = 42
-    # df1.to_csv("accuracy/kntuned.csv")
-
-
-
-
-# %%
-
-# %%
-
-#%%

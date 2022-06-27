@@ -1,5 +1,4 @@
 import sys
-
 from scipy.stats import loguniform
 from sklearn.compose import ColumnTransformer
 from sklearn.datasets import fetch_openml
@@ -112,7 +111,7 @@ class Experiment:
     all saved to a file called `experiment_results.gz`.
     """
 
-    def __init__(self, datasets, learners, tuning_params=None, tuning_strategy=None, n_splits=10,
+    def __init__(self, datasets, learners, tuning_params, tuning_strategy, n_splits=10,
                  performance_metric=accuracy_score, schedule_function=sqrt_schedule_function):
         """
         Create a new class for experiments, which runs each dataset against each learner and generate learning curves
@@ -211,10 +210,10 @@ class Experiment:
 
                 if hyperparameters is not None:
                     prediction_table.append((og_learner.__class__.__name__ + "tuned", openmlid, schedule[j], y_test_k,
-                                             predictions, performance, 42, 42))
+                                             predictions, performance))
                 else:
                     prediction_table.append((og_learner.__class__.__name__, openmlid, schedule[j], y_test_k,
-                                         predictions, performance, 42, 42))
+                                         predictions, performance))
         return prediction_table
 
     def run_all_experiments(self):
@@ -237,5 +236,5 @@ class Experiment:
         #                               columns=['learner', 'openmlid', 'size_train',
         #                                        'labels', 'predictions', 'score_valid', 'outer_seed', 'inner_seed'])
 
-        df_all_results.to_pickle("temp_data/experiment_results737.gz")
-        df_all_results.to_csv("temptest.csv")
+        df_all_results.to_pickle("experiment_results.gz")
+        #df_all_results.to_csv("temptest.csv")
